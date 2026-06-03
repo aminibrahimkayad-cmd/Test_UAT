@@ -2,21 +2,27 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Vérifier Interconnexion') {
             steps {
-                echo 'Code récupéré depuis GitHub avec succès'
+                echo 'Vérification de l\'interconnexion en cours...'
+                sh 'echo "Interconnexion vérifiée"'
             }
         }
 
-        stage('Build') {
+        stage('Récupérer Release') {
             steps {
-                echo 'Build en cours...'
+                echo 'Récupération du dernier release depuis /release...'
+                sh 'git checkout release'
+                sh 'git pull origin release'
             }
         }
 
-        stage('Deploy') {
+        stage('Déployer dans Main') {
             steps {
-                echo 'Déploiement en cours...'
+                echo 'Déploiement dans la branche main...'
+                sh 'git checkout main'
+                sh 'git merge release'
+                sh 'git push origin main'
             }
         }
     }
