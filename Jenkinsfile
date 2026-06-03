@@ -2,27 +2,20 @@ pipeline {
     agent any
 
     stages {
-        stage('Vérifier Interconnexion') {
+        stage('Vérifier Nouveau Commit') {
             steps {
-                echo 'Vérification de l\'interconnexion en cours...'
-                sh 'echo "Interconnexion vérifiée"'
-            }
-        }
-
-        stage('Récupérer Release') {
-            steps {
-                echo 'Récupération du dernier release depuis /release...'
-                sh 'git checkout release'
-                sh 'git pull origin release'
-            }
-        }
-
-        stage('Déployer dans Main') {
-            steps {
-                echo 'Déploiement dans la branche main...'
+                echo 'Vérification des nouveaux commits dans main...'
+                sh 'git fetch origin'
                 sh 'git checkout main'
-                sh 'git merge release'
-                sh 'git push origin main'
+                sh 'git log -1 --format=%H origin/main > /tmp/latest_commit.txt'
+            }
+        }
+
+        stage('Déployer') {
+            steps {
+                echo 'Déploiement en cours...'
+                sh 'git pull origin main'
+                sh 'echo "Déploiement effectué avec succès"'
             }
         }
     }
